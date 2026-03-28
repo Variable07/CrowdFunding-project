@@ -21,7 +21,7 @@
 
 <br/>
 
-[🚀 Live Demo](#) · [📖 Documentation](#) · [🐛 Report Bug](https://github.com/Variable07/CrowdFunding-project/issues) · [💡 Request Feature](https://github.com/Variable07/CrowdFunding-project/issues)
+[🚀 Live Demo](https://crowd-funding-project-sage.vercel.app/) · [📖 Documentation](#) · [🐛 Report Bug](https://github.com/Variable07/CrowdFunding-project/issues) · [💡 Request Feature](https://github.com/Variable07/CrowdFunding-project/issues)
 
 </div>
 
