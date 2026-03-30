@@ -1,27 +1,17 @@
+# 🚀 CrowdFunding — Blockchain-Powered Fundraising Platform
+
 <div align="center">
 
-<img src="https://img.shields.io/badge/Blockchain-Crowdfunding-00d4ff?style=for-the-badge&logo=ethereum&logoColor=white" />
+![Solidity](https://img.shields.io/badge/Solidity-0.8.20-363636?style=for-the-badge&logo=solidity)
+![React](https://img.shields.io/badge/React-18.2-61DAFB?style=for-the-badge&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-4.7-3178C6?style=for-the-badge&logo=typescript)
+![Arbitrum](https://img.shields.io/badge/Network-Arbitrum-28A0F0?style=for-the-badge)
+![Thirdweb](https://img.shields.io/badge/SDK-Thirdweb_v4-7C3AED?style=for-the-badge)
+![TailwindCSS](https://img.shields.io/badge/Tailwind_CSS-3.4-06B6D4?style=for-the-badge&logo=tailwindcss)
 
-# ⛓️ ChainFund — Decentralized Crowdfunding Platform
+**A trustless, transparent, and decentralized crowdfunding platform built on blockchain technology. Every donation is verifiable, every transaction immutable.**
 
-**Transparent · Trustless · Permissionless**
-
-[![Next.js](https://img.shields.io/badge/Next.js-14-black?style=flat-square&logo=next.js)](https://nextjs.org/)
-[![Solidity](https://img.shields.io/badge/Solidity-^0.8.0-363636?style=flat-square&logo=solidity)](https://soliditylang.org/)
-[![Hardhat](https://img.shields.io/badge/Hardhat-2.x-f7dc6f?style=flat-square&logo=hardhat)](https://hardhat.org/)
-[![Thirdweb](https://img.shields.io/badge/Thirdweb-SDK-7c3aed?style=flat-square)](https://thirdweb.com/)
-[![Firebase](https://img.shields.io/badge/Firebase-Auth-FF6F00?style=flat-square&logo=firebase)](https://firebase.google.com/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript)](https://typescriptlang.org/)
-[![Arbitrum](https://img.shields.io/badge/Network-Arbitrum%20Sepolia-2d374b?style=flat-square&logo=arbitrum)](https://arbitrum.io/)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](LICENSE)
-
-<br/>
-
-> A fully decentralized crowdfunding dApp built on Ethereum (Arbitrum Sepolia), combining on-chain transparency with an admin moderation layer for campaign legitimacy — no banks, no middlemen, no trust issues.
-
-<br/>
-
-[🚀 Live Demo](https://crowd-funding-project-sage.vercel.app/) · [📖 Documentation](#) · [🐛 Report Bug](https://github.com/Variable07/CrowdFunding-project/issues) · [💡 Request Feature](https://github.com/Variable07/CrowdFunding-project/issues)
+[Overview](#-overview) · [Architecture](#-architecture) · [Smart Contract](#-smart-contract) · [Frontend](#-frontend) · [Getting Started](#-getting-started) · [Flows](#-user-flows)
 
 </div>
 
@@ -31,692 +21,621 @@
 
 - [Overview](#-overview)
 - [Architecture](#-architecture)
-- [User Flow Diagram](#-user-flow-diagram)
-- [Smart Contract Design](#-smart-contract-design)
-- [Class Diagram](#-class-diagram)
-- [Sequence Diagrams](#-sequence-diagrams)
-- [Features](#-features)
+- [Smart Contract](#-smart-contract)
+- [Frontend Structure](#-frontend-structure)
+- [User Flows](#-user-flows)
+  - [Campaign Lifecycle](#campaign-lifecycle)
+  - [Donation Flow](#donation-flow)
+  - [Admin Moderation Flow](#admin-moderation-flow)
+  - [Authentication & Wallet Connection](#authentication--wallet-connection)
+- [Key Features](#-key-features)
 - [Tech Stack](#-tech-stack)
-- [Project Structure](#-project-structure)
 - [Getting Started](#-getting-started)
-- [Smart Contract Reference](#-smart-contract-reference)
 - [Environment Variables](#-environment-variables)
-- [Difficulties & Solutions](#-difficulties--solutions)
-- [Roadmap](#-roadmap)
-- [Contributing](#-contributing)
-- [License](#-license)
-- [Acknowledgements](#-acknowledgements)
+- [Contract Deployment](#-contract-deployment)
+- [Pages & Components](#-pages--components)
+- [State Management](#-state-management)
+- [Security Model](#-security-model)
 
 ---
 
-## 🔭 Overview
+## 🌐 Overview
 
-Traditional crowdfunding platforms (GoFundMe, Kickstarter) are plagued by:
+CrowdFunding is a fully decentralized crowdfunding application that removes intermediaries between campaign creators and donors. Built on the **Arbitrum** network, it leverages smart contracts for:
 
-| Problem | Traditional | ChainFund |
-|---|---|---|
-| 💸 Platform Fees | 5–10% | ~0% (gas only) |
-| 🔍 Transparency | Opaque | Fully on-chain |
-| 🛡️ Trust | Centralized control | Smart contract enforced |
-| 🌍 Accessibility | Geographic limits | Global, permissionless |
-| 🔒 Fund Safety | Platform holds funds | Contract-locked |
-
-ChainFund solves these by deploying campaign logic as an immutable smart contract on Arbitrum Sepolia, while using Firebase to power an admin moderation layer that keeps the platform legitimate without fully centralizing it.
+- **Transparent fund management** — all transactions are publicly verifiable on-chain
+- **Trustless donations** — funds go directly to campaign owners via smart contract
+- **Admin-governed moderation** — campaigns require approval before going live
+- **Immutable records** — campaign history and donation data cannot be altered
 
 ---
 
-## 🏛️ Architecture
+## 🏗 Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────┐
-│                        CLIENT LAYER                                 │
-│                                                                     │
-│   ┌─────────────────────┐         ┌────────────────────────────┐    │
-│   │   User Interface    │         │       Admin Panel          │    │
-│   │   (Next.js + TS)    │         │   (Firebase Auth-gated)    │    │
-│   └──────────┬──────────┘         └──────────────┬─────────────┘    │
-│              │                                    │                 │
-│   ┌──────────▼──────────┐         ┌──────────────▼─────────────┐    │
-│   │  Thirdweb SDK       │         │   Firebase Firestore       │    │
-│   │  (Wallet + Contract)│         │   (Metadata + Status)      │    │
-│   └──────────┬──────────┘         └──────────────┬─────────────┘    │
-└──────────────┼──────────────────────────────────┼──────────────────┘
-               │                                   │
-               │         INTEGRATION LAYER         │
-               │  ┌────────────────────────────┐   │
-               └──►  blockchain.ts / firebase.ts◄───┘
-                  └────────────────┬───────────┘
-                                   │
-┌──────────────────────────────────▼──────────────────────────────────┐
-│                       BLOCKCHAIN LAYER                               │
-│                                                                      │
-│   ┌─────────────────────────────────────────────────────────────┐    │
-│   │              CrowdFunding.sol (Solidity Smart Contract)      │   │
-│   │                                                              │   │
-│   │   createCampaign()  ──►  Campaign Storage (on-chain)         │   │
-│   │   donateToCampaign() ──► ETH Transfer (trustless)            │   │
-│   │   withdrawFunds()   ──►  Owner Payout (conditional)          │   │
-│   │   getCampaigns()    ──►  Public Read Access                  │   │
-│   └─────────────────────────────────────────────────────────────┘    │
-│                                                                      │
-│                    ⟠  Arbitrum Sepolia Testnet                       │
-└──────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────────────────────────────────────────────┐
+│                        CLIENT (Browser)                         │
+│                                                                 │
+│  ┌──────────────┐   ┌──────────────┐   ┌──────────────────┐   │
+│  │  React + Vite │   │  TailwindCSS │   │  React Router v6 │   │
+│  └──────────────┘   └──────────────┘   └──────────────────┘   │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │                  StateContext (Global State)             │   │
+│  │  address │ contract │ campaigns │ donations │ isAdmin    │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                              │                                  │
+│                              ▼                                  │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │             Thirdweb SDK (@thirdweb-dev/react)           │   │
+│  │        Wallet Connection │ Contract Interaction          │   │
+│  └─────────────────────────────────────────────────────────┘   │
+└───────────────────────────────┬─────────────────────────────────┘
+                                │  JSON-RPC / WebSocket
+                                ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    ARBITRUM NETWORK (L2)                        │
+│                                                                 │
+│  ┌─────────────────────────────────────────────────────────┐   │
+│  │            CrowdFunding.sol (Smart Contract)             │   │
+│  │                                                          │   │
+│  │  createCampaign()   │   donateToCampaign()               │   │
+│  │  approveCampaign()  │   rejectCampaign()                 │   │
+│  │  getCampaigns()     │   getDonators()                    │   │
+│  └─────────────────────────────────────────────────────────┘   │
+│                                                                 │
+│  Contract Address: 0x642a4ebf0f280e1a107eab1ab86bc21ac1815dfc  │
+└─────────────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 🔄 User Flow Diagram
+## 📜 Smart Contract
 
-### General User Flow
+**File:** `web3/contracts/CroudFunding.sol`  
+**Standard:** Solidity `^0.8.20` with OpenZeppelin `AccessControl`
 
-```
-                            ┌──────────────────┐
-                            │   User Visits App│
-                            └────────┬─────────┘
-                                     │
-                            ┌────────▼─────────┐
-                            │  Connect MetaMask │
-                            │     Wallet        │
-                            └────────┬─────────┘
-                                     │
-                      ┌──────────────┼──────────────┐
-                      │              │              │
-             ┌────────▼────┐ ┌───────▼─────┐ ┌─────▼──────────┐
-             │ Browse Live  │ │  Create New │ │  View Rejected  │
-             │  Campaigns   │ │  Campaign   │ │   Campaigns     │
-             └─────┬───────┘ └───────┬─────┘ └────────────────┘
-                   │                 │
-                   │        ┌────────▼──────────────┐
-                   │        │  Fill Campaign Details │
-                   │        │  Title / Description   │
-                   │        │  Image / Target / Date │
-                   │        └────────┬──────────────┘
-                   │                 │
-                   │        ┌────────▼──────────────┐
-                   │        │  Campaign Submitted    │
-                   │        │  Status: ⏳ PENDING    │
-                   │        └────────┬──────────────┘
-                   │                 │
-                   │        ┌────────▼──────────────┐
-                   │        │    Admin Reviews       │◄─────────────────┐
-                   │        └──────┬──────────┬──────┘                  │
-                   │               │          │                         │
-                   │      ┌────────▼──┐   ┌───▼──────────┐              │
-                   │      │ ✅ APPROVED│   │ ❌ REJECTED   │            │
-                   │      └────────┬──┘   └───┬──────────┘              │
-                   │               │          │                         │
-                   │      ┌────────▼──┐   ┌───▼──────────┐              │
-                   │      │ Campaign  │   │ Reason shown │              │
-                   │      │ Goes Live │   │ publicly     │              │
-                   │      └────┬──────┘   └──────────────┘              │
-                   │           │                                        │
-             ┌─────▼────┐ ┌────▼──────────────────┐                     │
-             │  Donate   │ │  Fund with ETH         │                   │
-             │  History  │ │  (Any wallet)          │                   │
-             └──────────┘ └────────┬──────────────┘                     │
-                                   │                                    │
-                          ┌────────▼──────────────┐                     │
-                          │  Target Reached?       │                    │
-                          └────────┬──────────────┘                     │
-                                   │                                    │
-                      ┌────────────┼─────────────┐                      │
-                      │                           │                     │
-             ┌────────▼────┐           ┌──────────▼───┐                 │
-             │  YES →       │           │  NO →         │               │
-             │  Owner can   │           │  Campaign     ├──────────────┘
-             │  Withdraw ✅  │           │  Continues    │
-             └─────────────┘           └──────────────┘
-```
-
-### Admin Flow
+### Contract Structure
 
 ```
-         ┌─────────────────────┐
-         │  Admin visits /admin │
-         └──────────┬──────────┘
-                    │
-         ┌──────────▼──────────┐
-         │  Firebase Auth Login │
-         │  (Email + Password)  │
-         └──────────┬──────────┘
-                    │
-         ┌──────────▼──────────┐       ┌───────────────────┐
-         │  View All Campaigns  ├──────►│ Filter by Status  │
-         │  (Pending / All)     │       │ Pending/Approved/ │
-         └──────────┬──────────┘       │ Rejected          │
-                    │                  └───────────────────┘
-         ┌──────────▼──────────┐
-         │  Select a Campaign   │
-         └────────┬──────┬─────┘
-                  │      │
-       ┌──────────▼──┐ ┌─▼────────────────────┐
-       │  ✅ Approve  │ │  ❌ Reject             │
-       │  Campaign    │ │  → Enter Reason       │
-       └──────────┬──┘ └─┬────────────────────┘
-                  │      │
-       ┌──────────▼──┐ ┌─▼────────────────────┐
-       │  Status →   │ │  Status → REJECTED    │
-       │  APPROVED   │ │  Reason stored in     │
-       │  Stored in  │ │  Firebase + visible   │
-       │  Firebase   │ │  publicly             │
-       └─────────────┘ └──────────────────────┘
+CrowdFunding (inherits AccessControl)
+│
+├── Roles
+│   ├── DEFAULT_ADMIN_ROLE  → Super admin (deployer)
+│   └── ADMIN_ROLE          → Can approve/reject campaigns
+│
+├── Data
+│   ├── Campaign (struct)
+│   │   ├── owner           address
+│   │   ├── title           string
+│   │   ├── description     string
+│   │   ├── target          uint256 (wei)
+│   │   ├── deadline        uint256 (unix timestamp)
+│   │   ├── amountCollected uint256 (wei)
+│   │   ├── image           string (URL)
+│   │   ├── donators        address[]
+│   │   ├── donations       uint256[]
+│   │   ├── status          CampaignStatus (0=Pending, 1=Approved, 2=Rejected)
+│   │   └── rejectionReason string
+│   │
+│   └── campaigns           mapping(uint256 => Campaign)
+│
+├── Functions (Public)
+│   ├── createCampaign()    → Creates campaign in Pending state
+│   ├── donateToCampaign()  → Sends ETH to campaign owner (payable)
+│   ├── getDonators()       → Returns donators + amounts for a campaign
+│   └── getCampaigns()      → Returns all campaigns array
+│
+├── Functions (Admin Only)
+│   ├── approveCampaign()   → Sets status to Approved
+│   ├── rejectCampaign()    → Sets status to Rejected with reason
+│   ├── grantAdminRole()    → Grants ADMIN_ROLE to an address
+│   └── revokeAdminRole()   → Revokes ADMIN_ROLE from an address
+│
+└── Events
+    ├── CampaignCreated(campaignId, owner)
+    ├── CampaignApproved(campaignId)
+    ├── CampaignRejected(campaignId, reason)
+    └── DonationReceived(campaignId, donor, amount)
 ```
 
----
-
-## 📜 Smart Contract Design
-
-### CrowdFunding.sol — State Machine
+### Campaign Status State Machine
 
 ```
                     ┌─────────────┐
-                    │   CREATED   │  ← createCampaign() called
+    createCampaign  │             │
+   ────────────────▶│   PENDING   │
+                    │   (status=0)│
                     └──────┬──────┘
                            │
-                    ┌──────▼──────┐
-                    │   PENDING   │  ← Awaiting admin decision
-                    └──────┬──────┘
-                           │
-           ┌───────────────┼──────────────────┐
-           │                                  │
-    ┌──────▼──────┐                  ┌────────▼──────┐
-    │  APPROVED   │                  │   REJECTED    │
-    │  (fundable) │                  │  (read-only)  │
-    └──────┬──────┘                  └───────────────┘
-           │
-    ┌──────▼──────────────┐
-    │  donateToCampaign() │ ← Any wallet can fund
-    │  ETH accumulates    │
-    └──────┬──────────────┘
-           │
-    ┌──────▼──────────────┐
-    │  Target reached OR  │
-    │  Deadline passed?   │
-    └──────┬──────────────┘
-           │
-    ┌──────▼──────────────┐
-    │  withdrawFunds()    │ ← Only campaign owner
-    └─────────────────────┘
-```
-
-### Contract Data Structures
-
-```solidity
-struct Campaign {
-    address owner;          // Creator's wallet address
-    string title;           // Campaign name
-    string description;     // Full description
-    uint256 target;         // Funding goal (in wei)
-    uint256 deadline;       // UNIX timestamp
-    uint256 amountCollected; // Current balance
-    string image;           // IPFS / URL
-    address[] donators;     // List of donors
-    uint256[] donations;    // Parallel amounts array
-    CampaignStatus status;  // Enum: Pending | Approved | Rejected
-    string rejectionReason; // Populated if Rejected
-}
-
-enum CampaignStatus {
-    Pending,    // 0 - Default on creation
-    Approved,   // 1 - Admin approved, fundable
-    Rejected    // 2 - Admin rejected with reason
-}
+               ┌───────────┴───────────┐
+               │                       │
+        approve│                 reject│ + reason
+               ▼                       ▼
+        ┌──────────┐           ┌──────────────┐
+        │ APPROVED │           │   REJECTED   │
+        │(status=1)│           │  (status=2)  │
+        └──────────┘           └──────────────┘
+               │
+        Accepts donations
+        (deadline must be
+         in the future)
 ```
 
 ---
 
-## 🧩 Class Diagram
+## 🖥 Frontend Structure
 
 ```
-┌──────────────────────────────────────────────────────────────────────┐
-│                          CrowdFunding.sol                            │
-├──────────────────────────────────────────────────────────────────────┤
-│  - campaigns: Campaign[]                                             │
-│  - owner: address                                                    │
-│  - numberOfCampaigns: uint256                                        │
-├──────────────────────────────────────────────────────────────────────┤
-│  + createCampaign(owner, title, desc, target, deadline, image)       │
-│    → uint256 (campaign ID)                                           │
-│  + donateToCampaign(id: uint256) payable                             │
-│    → void                                                            │
-│  + withdrawFunds(id: uint256)                                        │
-│    → bool                                                            │
-│  + getCampaigns()                                                    │
-│    → Campaign[]                                                      │
-│  + getDonators(id: uint256)                                          │
-│    → address[], uint256[]                                            │
-│  + updateStatus(id, status, reason) [admin only]                     │
-│    → void                                                            │
-└──────────────────────────┬───────────────────────────────────────────┘
-                           │ uses
-          ┌────────────────┴──────────────────┐
-          │                                   │
-┌─────────▼────────────┐          ┌───────────▼───────────────┐
-│    Campaign Struct    │          │      CampaignStatus Enum   │
-├──────────────────────┤          ├───────────────────────────  ┤
-│ owner: address        │          │  Pending = 0               │
-│ title: string         │          │  Approved = 1              │
-│ description: string   │          │  Rejected = 2              │
-│ target: uint256       │          └───────────────────────────┘
-│ deadline: uint256     │
-│ amountCollected: uint │
-│ image: string         │
-│ donators: address[]   │
-│ donations: uint256[]  │
-│ status: CampaignStatus│
-│ rejectionReason: str  │
-└──────────────────────┘
-
-┌────────────────────────────┐      ┌──────────────────────────┐
-│       blockchain.ts         │      │       firebase.ts          │
-├────────────────────────────┤      ├──────────────────────────┤
-│ + getContract()             │      │ + adminLogin(email, pass) │
-│ + createCampaign(form)      │      │ + getCampaignMeta(id)     │
-│ + getCampaigns()            │      │ + updateCampaignStatus(id)│
-│ + donateToCampaign(id, amt) │      │ + setRejectionReason(id)  │
-│ + withdrawFunds(id)         │      │ + listenToUpdates(id)     │
-│ + getDonators(id)           │      └──────────────────────────┘
-└────────────────────────────┘
-
-┌────────────────────────────┐      ┌──────────────────────────┐
-│       CampaignCard.tsx      │      │         Navbar.tsx         │
-├────────────────────────────┤      ├──────────────────────────┤
-│ Props:                      │      │ Props:                     │
-│   campaign: Campaign        │      │   address: string          │
-│   onClick: () => void       │      │   connect: () => void      │
-├────────────────────────────┤      ├──────────────────────────┤
-│ Renders:                    │      │ Renders:                   │
-│   - Title, Image            │      │   - Logo                   │
-│   - Progress Bar            │      │   - Nav Links              │
-│   - Status Badge            │      │   - Wallet Button          │
-│   - Deadline                │      │   - Address display        │
-│   - Raised / Target         │      └──────────────────────────┘
-└────────────────────────────┘
+Frontend/src/
+│
+├── @types/
+│   └── vite-env.d.ts          # Vite environment type declarations
+│
+├── assets/                    # Images, icons, logos
+│
+├── components/
+│   ├── CampaignFilters.tsx    # Search + sort + category filters
+│   ├── CampaignStats.tsx      # Aggregate stats (total raised, backers, etc.)
+│   ├── HeroSection.tsx        # Landing page hero with CTAs
+│   ├── Layout.tsx             # Page layout wrapper with Navbar
+│   ├── TopNavbar.tsx          # Top navigation with wallet connect
+│   ├── countBox.tsx           # Single stat display box
+│   ├── customButton.tsx       # Reusable styled button
+│   ├── displayCampaigns.tsx   # Campaign grid with cards
+│   ├── formField.tsx          # Form input / textarea field
+│   ├── loader.tsx             # Full-screen transaction loading overlay
+│   ├── navbar.tsx             # Secondary navbar with search bar
+│   └── sidebarIcon.tsx        # Sidebar navigation icon
+│
+├── constants/
+│   └── index.ts               # Navigation links config
+│
+├── contexts/
+│   └── index.tsx              # Global StateContext + blockchain functions
+│
+├── pages/
+│   ├── admin.tsx              # Admin moderation dashboard
+│   ├── campaignDetails.tsx    # Individual campaign view + donation panel
+│   ├── createCampaign.tsx     # Campaign creation form
+│   ├── home.tsx               # Main campaigns listing page
+│   ├── landing.tsx            # Public landing page
+│   └── profile.tsx            # User's own campaigns
+│
+└── utils/
+    └── index.ts               # daysLeft, calculateBarPercentage, checkIfImage
 ```
 
 ---
 
-## 🔁 Sequence Diagrams
+## 🔄 User Flows
 
-### Campaign Creation & Approval
+### Campaign Lifecycle
 
 ```
-User          Frontend         Blockchain.ts      Contract       Firebase       Admin
- │                │                  │               │               │             │
- ├──fill form────►│                  │               │               │             │
- │                ├──createCampaign()►│               │               │             │
- │                │                  ├──tx.send()────►│               │             │
- │                │                  │               ├──emit event───►│             │
- │                │                  │               │               ├─store meta──►│
- │                │◄─────────────────┤               │               │             │
- │◄──success──────┤                  │               │               │             │
- │                │                  │               │               │             │
- │                │                  │               │               │      ┌──────┤
- │                │                  │               │               │      │ Admin│
- │                │                  │               │               │      │ logs │
- │                │                  │               │               │      │  in  │
- │                │                  │               │               │◄─────┤      │
- │                │                  │               │               ├─campaigns──► │
- │                │                  │               │               │             ├─review─┐
- │                │                  │               │               │             │        │
- │                │                  │               │               │◄──approve───┤        │
- │                │                  │               │               ├─update status         │
- │                │                  │               │               │             │        │
- │◄──status:      │                  │               │               │             │
- │   APPROVED─────┤                  │               │               │             │
+User                    Frontend                  Smart Contract          Admin
+ │                         │                           │                    │
+ │  Fill campaign form      │                           │                    │
+ │─────────────────────────▶│                           │                    │
+ │                         │  Validate image URL        │                    │
+ │                         │  (checkIfImage util)       │                    │
+ │                         │                           │                    │
+ │                         │  createCampaign(args)     │                    │
+ │                         │──────────────────────────▶│                    │
+ │                         │                           │ Stores campaign    │
+ │                         │                           │ status = PENDING   │
+ │                         │  ◀── tx confirmed ────────│                    │
+ │                         │                           │                    │
+ │  Redirect to /admin     │                           │                    │
+ │◀────────────────────────│                           │                    │
+ │                         │                           │                    │
+ │                         │                           │  Admin reviews     │
+ │                         │                           │◀───────────────────│
+ │                         │                           │                    │
+ │                         │                           │  approveCampaign() │
+ │                         │                           │◀───────────────────│
+ │                         │                           │ status = APPROVED  │
+ │                         │                           │                    │
+ │  Campaign visible on /home                          │                    │
+ │◀─────────────────────────────────────────────────────                    │
 ```
+
+---
 
 ### Donation Flow
 
 ```
-Donor         Frontend        blockchain.ts      Contract        Owner
- │                │                 │                │              │
- ├──select amount►│                 │                │              │
- │                ├─donateToCampaign►│               │              │
- │                │                 ├──tx({value})──►│              │
- │                │                 │                ├─store donor──┤
- │                │                 │                ├─add amount   │
- │                │                 │                │              │
- │                │◄────────────────┤                │              │
- │◄──confirmed────┤                 │                │              │
- │                │                 │                │              │
- │                │                 │        [Target Reached]       │
- │                │                 │                │              │
- │                │                 │                │◄─withdraw()──┤
- │                │                 │                ├──transfer────►│
- │                │                 │                │   ETH        │
+Donor                   Frontend                   Smart Contract
+  │                        │                             │
+  │  Browse campaigns       │                             │
+  │───────────────────────▶│                             │
+  │                        │  getApprovedCampaigns()    │
+  │                        │───────────────────────────▶│
+  │                        │◀─── campaigns array ───────│
+  │                        │                             │
+  │  Click campaign card   │                             │
+  │───────────────────────▶│  Navigate to /campaign-details/:title
+  │                        │                             │
+  │  getDonations(pId)     │                             │
+  │                        │───────────────────────────▶│
+  │                        │◀─── [donators, amounts] ───│
+  │                        │                             │
+  │  Enter donation amount │                             │
+  │  Click "Donate Now"    │                             │
+  │───────────────────────▶│                             │
+  │                        │  donateToCampaign(pId)     │
+  │                        │  { value: ethers.parseEther(amount) }
+  │                        │───────────────────────────▶│
+  │                        │                           │
+  │                        │                     ETH transferred
+  │                        │                     directly to campaign.owner
+  │                        │                     amountCollected += amount
+  │                        │                           │
+  │                        │◀─── tx confirmed ─────────│
+  │  Donation list updates │                             │
+  │◀───────────────────────│                             │
 ```
 
 ---
 
-## 🚀 Features
+### Admin Moderation Flow
 
-### 🧑‍💼 General User Features
+```
+Admin                   Frontend                   Blockchain
+  │                        │                           │
+  │  Connect wallet         │                           │
+  │───────────────────────▶│                           │
+  │                        │  hasRole(ADMIN_ROLE, addr)│
+  │                        │──────────────────────────▶│
+  │                        │◀─── true/false ───────────│
+  │                        │                           │
+  │  Navigate to /admin    │  (redirects if not admin) │
+  │───────────────────────▶│                           │
+  │                        │                           │
+  │                        │  getPendingCampaigns()    │
+  │                        │──────────────────────────▶│
+  │                        │◀─── pending[] ────────────│
+  │                        │                           │
+  │  View campaign details │                           │
+  │                        │                           │
+  │  ┌─────────────────────────────────────────────┐  │
+  │  │            DECISION POINT                   │  │
+  │  │                                             │  │
+  │  │  [Approve]              [Reject + Reason]   │  │
+  │  └──────────┬──────────────────────┬───────────┘  │
+  │             │                      │               │
+  │             ▼                      ▼               │
+  │  approveCampaign(id)    rejectCampaign(id, reason) │
+  │             │                      │               │
+  │             └────────────┬─────────┘               │
+  │                          │──────────────────────────▶│
+  │                          │◀─── tx confirmed ─────────│
+  │                          │                           │
+  │  Data refreshes          │  refreshCampaigns()      │
+  │◀─────────────────────────│──────────────────────────▶│
+```
+
+---
+
+### Authentication & Wallet Connection
+
+```
+User                    Thirdweb SDK              MetaMask / Wallet
+  │                         │                           │
+  │  Click "Connect Wallet" │                           │
+  │────────────────────────▶│                           │
+  │                         │  connect(metamaskWallet())│
+  │                         │──────────────────────────▶│
+  │                         │                     Prompt user
+  │                         │◀─── wallet address ───────│
+  │                         │                           │
+  │  address stored in      │                           │
+  │  StateContext           │                           │
+  │                         │                           │
+  │  useEffect triggers:    │                           │
+  │  ├─ checkAdminStatus()  │                           │
+  │  ├─ refreshCampaigns()  │                           │
+  │  └─ isAdmin flag set    │                           │
+  │                         │                           │
+  │  UI updates:            │                           │
+  │  ├─ Show "Create Campaign" button                   │
+  │  ├─ Show /admin link (if isAdmin)                   │
+  │  └─ Show wallet address in nav                      │
+```
+
+---
+
+## ✨ Key Features
 
 | Feature | Description |
 |---|---|
-| 🔐 Wallet Auth | Connect via MetaMask — no sign-up required |
-| 🖼 Create Campaign | Title, description, image URL, target ETH, deadline |
-| 📊 Live Status | Real-time campaign status: Pending / Approved / Rejected |
-| 💸 Fund Campaigns | Donate ETH to any approved campaign |
-| 🧾 Donor History | See all donors and amounts for each campaign |
-| 🛑 Rejection Reason | Transparent public reason for every rejected campaign |
-| 💰 Withdraw | Campaign owner can withdraw collected ETH |
-
-### 🛠 Admin Panel Features
-
-| Feature | Description |
-|---|---|
-| 🔑 Secure Login | Firebase email/password authentication |
-| 📋 Campaign Queue | View all pending campaigns for review |
-| ✅ Approve | Mark campaign as live and fundable |
-| ❌ Reject | Reject with mandatory reason (shown publicly) |
-| 🏷️ Status Tags | Visual badges: Pending / Approved / Rejected |
+| 🔐 **Wallet Authentication** | MetaMask/Web3 wallet connection via Thirdweb SDK |
+| 📋 **Campaign Moderation** | Admin role-based approval/rejection before campaigns go live |
+| 💸 **Direct Donations** | ETH sent directly to campaign owners — no escrow, no fees |
+| 🔍 **Search & Filter** | Filter by category, sort by date/funding/deadline |
+| 📊 **Live Stats** | Real-time aggregate stats — total raised, backers, active campaigns |
+| ⏰ **Urgency Indicators** | "Ending Soon" and "Urgent" badges for campaigns near deadline |
+| 👤 **Profile Page** | View all campaigns created by the connected wallet |
+| 🛡 **Admin Dashboard** | Full overview table + pending review queue for admins |
+| 📱 **Responsive Design** | Mobile-first UI with collapsible drawer navigation |
+| 🔄 **Campaign Caching** | 5-second cache to reduce redundant RPC calls |
 
 ---
 
-## 🏗️ Tech Stack
+## 🛠 Tech Stack
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                        TECH STACK                            │
-│                                                              │
-│  Frontend                    Backend / Blockchain            │
-│  ─────────                   ──────────────────              │
-│  ▸ Next.js 14                ▸ Solidity ^0.8.0               │
-│  ▸ TypeScript 5              ▸ Hardhat 2.x                   │
-│  ▸ Tailwind CSS              ▸ Thirdweb CLI                  │
-│  ▸ Thirdweb SDK              ▸ Firebase Firestore            │
-│                              ▸ Firebase Auth                 │
-│                                                              │
-│  Network                     Dev Tooling                     │
-│  ──────                      ──────────                      │
-│  ▸ Arbitrum Sepolia          ▸ ESLint                        │
-│    (Ethereum L2)             ▸ Prettier                      │
-│  ▸ MetaMask                  ▸ dotenv                        │
-│  ▸ Ethers.js                                                 │
-└─────────────────────────────────────────────────────────────┘
-```
+### Frontend
+| Layer | Technology | Version |
+|---|---|---|
+| Framework | React | 18.2 |
+| Language | TypeScript | 4.7 |
+| Build Tool | Vite | 3.x |
+| Styling | TailwindCSS | 3.4 |
+| Routing | React Router DOM | 6.22 |
+| Icons | Lucide React | 0.483 |
+| Animations | Framer Motion | 12.x |
+| Notifications | Sonner | 1.4 |
 
----
-
-## 📂 Project Structure
-
-```
-crowdfunding-blockchain/
-│
-├── 📁 smart_contracts/              # Blockchain layer
-│   ├── CrowdFunding.sol             # Main smart contract
-│   ├── hardhat.config.ts            # Hardhat configuration
-│   └── scripts/
-│       └── deploy.ts                # Deployment script
-│
-├── 📁 pages/                        # Next.js routing
-│   ├── index.tsx                    # Homepage — campaign listing
-│   ├── create-campaign.tsx          # Campaign creation form
-│   ├── campaign/[id].tsx            # Individual campaign page
-│   └── admin.tsx                    # Admin moderation panel
-│
-├── 📁 components/                   # Reusable UI components
-│   ├── CampaignCard.tsx             # Campaign display card
-│   ├── Navbar.tsx                   # Navigation + wallet connector
-│   ├── StatusBadge.tsx              # Pending / Approved / Rejected
-│   ├── DonationList.tsx             # Donor history table
-│   └── ProgressBar.tsx              # Funding progress indicator
-│
-├── 📁 utils/                        # Service layer
-│   ├── blockchain.ts                # Contract interaction helpers
-│   └── firebase.ts                  # Firebase CRUD operations
-│
-├── 📁 context/                      # Global state
-│   └── index.tsx                    # ThirdwebProvider + state
-│
-├── 📁 types/                        # TypeScript definitions
-│   └── campaign.ts                  # Campaign, Donation types
-│
-├── .env.local                       # Environment variables
-├── next.config.js                   # Next.js config
-├── tailwind.config.js               # Tailwind CSS config
-└── package.json
-```
+### Blockchain
+| Layer | Technology | Version |
+|---|---|---|
+| Network | Arbitrum (L2) | — |
+| SDK | Thirdweb React | 4.x |
+| Ethereum Library | ethers.js | 5.x |
+| Smart Contract | Solidity | 0.8.20 |
+| Access Control | OpenZeppelin | 5.3 |
+| Dev Framework | Hardhat | 2.23 |
 
 ---
 
-## ⚙️ Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js `>= 18.x`
-- npm or yarn
+- Node.js `>= 18.0.0`
+- Yarn or npm
 - MetaMask browser extension
-- A Firebase project (free tier works)
-- Thirdweb account (free)
+- Arbitrum testnet/mainnet ETH
 
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/crowdfunding-blockchain
-cd crowdfunding-blockchain
+git clone <repository-url>
+cd crowdfunding
 ```
 
-### 2. Install Dependencies
+### 2. Install Frontend Dependencies
 
 ```bash
-npm install
+cd Frontend
+yarn install
 ```
 
-### 3. Configure Environment Variables
+### 3. Configure Environment
 
-Create a `.env.local` file in the root:
+Create a `.env` file in the `Frontend/` directory:
 
 ```env
-# Blockchain
-NEXT_PUBLIC_CONTRACT_ADDRESS=0xYourDeployedContractAddress
-NEXT_PUBLIC_THIRDWEB_CLIENT_ID=your_thirdweb_client_id
-
-# Firebase
-NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
-NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
-NEXT_PUBLIC_FIREBASE_PROJECT_ID=your_project_id
-NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
-NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
-NEXT_PUBLIC_FIREBASE_APP_ID=your_app_id
+VITE_TEMPLATE_CLIENT_ID=your_thirdweb_client_id
 ```
 
-### 4. Deploy Smart Contract (Optional — use existing)
+### 4. Start the Development Server
 
 ```bash
-cd smart_contracts
-npm install
-npx hardhat compile
-npx thirdweb deploy
+yarn dev
 ```
 
-> Follow the Thirdweb CLI prompts to deploy on **Arbitrum Sepolia**.  
-> Copy the deployed contract address into your `.env.local`.
+The app will be available at `http://localhost:5173`
 
-### 5. Run the Development Server
+### 5. Build for Production
 
 ```bash
-npm run dev
+yarn build
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+### 6. Deploy Frontend (via Thirdweb Storage)
 
-### 6. Configure Admin Access
-
-In Firebase Console:
-1. Enable **Email/Password** Authentication
-2. Create an admin user manually
-3. In Firestore, create an `admins` collection with the admin's UID
+```bash
+yarn deploy
+```
 
 ---
 
-## 📘 Smart Contract Reference
-
-### `createCampaign`
-
-```solidity
-function createCampaign(
-    address _owner,
-    string memory _title,
-    string memory _description,
-    uint256 _target,
-    uint256 _deadline,
-    string memory _image
-) public returns (uint256)
-```
-
-Creates a new campaign with `Pending` status. Returns the campaign ID.
-
-### `donateToCampaign`
-
-```solidity
-function donateToCampaign(uint256 _id) public payable
-```
-
-Sends ETH to the campaign. Only callable on `Approved` campaigns. Records donor address and amount.
-
-### `withdrawFunds`
-
-```solidity
-function withdrawFunds(uint256 _id) public returns (bool)
-```
-
-Transfers collected ETH to the campaign owner. Requires `msg.sender == campaign.owner`.
-
-### `getCampaigns`
-
-```solidity
-function getCampaigns() public view returns (Campaign[] memory)
-```
-
-Returns the full array of all campaigns (all statuses).
-
-### `getDonators`
-
-```solidity
-function getDonators(uint256 _id) public view 
-    returns (address[] memory, uint256[] memory)
-```
-
-Returns parallel arrays of donor addresses and their donation amounts.
-
----
-
-## 🔐 Environment Variables
+## 🔑 Environment Variables
 
 | Variable | Description | Required |
 |---|---|---|
-| `NEXT_PUBLIC_CONTRACT_ADDRESS` | Deployed CrowdFunding contract address | ✅ |
-| `NEXT_PUBLIC_THIRDWEB_CLIENT_ID` | Thirdweb project client ID | ✅ |
-| `NEXT_PUBLIC_FIREBASE_API_KEY` | Firebase project API key | ✅ |
-| `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN` | Firebase Auth domain | ✅ |
-| `NEXT_PUBLIC_FIREBASE_PROJECT_ID` | Firebase project ID | ✅ |
-| `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET` | Firebase storage bucket | ✅ |
-| `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | Firebase messaging ID | ✅ |
-| `NEXT_PUBLIC_FIREBASE_APP_ID` | Firebase app ID | ✅ |
+| `VITE_TEMPLATE_CLIENT_ID` | Thirdweb API Client ID (get from [thirdweb.com/dashboard](https://thirdweb.com/dashboard)) | ✅ Yes |
 
 ---
 
-## 🧗 Difficulties & Solutions
+## 📦 Contract Deployment
 
-| Challenge | Solution Applied |
+### 1. Install Web3 Dependencies
+
+```bash
+cd web3
+yarn install
+```
+
+### 2. Configure `.env`
+
+```env
+PRIVATE_KEY=your_deployer_wallet_private_key
+```
+
+### 3. Deploy via Thirdweb
+
+```bash
+yarn deploy
+```
+
+> The deployed contract address must be updated in `Frontend/src/contexts/index.tsx`:
+> ```typescript
+> const { contract } = useContract("YOUR_CONTRACT_ADDRESS")
+> ```
+
+
+## 📄 Pages & Components
+
+### Pages
+
+| Route | Component | Access | Description |
+|---|---|---|---|
+| `/` | `LandingPage` | Public | Hero section with CTAs and stats |
+| `/home` | `Home` | Public | Browse all approved campaigns |
+| `/create-campaign` | `CreateCampaign` | Wallet connected | Campaign creation form |
+| `/campaign-details/:title` | `CampaignDetails` | Public | Campaign info + donation panel |
+| `/profile` | `Profile` | Wallet connected | User's own campaigns |
+| `/admin` | `AdminDashboard` | Admin only | Moderation queue + overview |
+
+### Core Components
+
+| Component | Purpose |
 |---|---|
-| **Thirdweb SDK integration** | Deeply studied SDK docs; used `useContract` and `useContractWrite` hooks correctly with proper ABI typing |
-| **Async blockchain transactions** | Used `await` chains with loading states; React state managed confirmation stages (idle → pending → confirmed) |
-| **Admin moderation vs decentralization** | Hybrid model: on-chain stores truth (funds, donors), Firebase stores metadata (status, reason) — keeps funds trustless |
-| **Security & usability balance** | Admin status check via Firebase rules; on-chain withdraw only for campaign owner; frontend guards for UX |
-| **State sync (Firebase ↔ Blockchain)** | Campaign ID used as foreign key; Firestore listener + contract polling combined for real-time UI |
+| `DisplayCampaigns` | Renders campaign grid with filtering; shows active-only or all based on `showAllCampaigns` prop |
+| `CampaignFilters` | Search input + expandable sort/category dropdowns |
+| `CampaignStats` | 4-stat summary bar (total raised, success rate, active campaigns, total backers) |
+| `TopNavbar` | Persistent nav with wallet connect and mobile drawer |
+| `Loader` | Full-screen overlay during blockchain transactions |
+| `FormField` | Reusable input/textarea with consistent styling |
 
 ---
 
-## 🗺️ Roadmap
+## 🗂 State Management
+
+All global state is managed via React Context (`StateContext`):
+
+```typescript
+StateContextType {
+  // Wallet
+  address: string | undefined
+  connect: (wallet) => void
+  disconnect: () => void
+
+  // Contract
+  contract: SmartContract | undefined
+
+  // Campaigns
+  getCampaigns: () => Promise<ParsedCampaign[]>
+  getApprovedCampaigns: () => Promise<ParsedCampaign[]>
+  getUserCampaigns: () => Promise<ParsedCampaign[]>
+  getPendingCampaigns: () => Promise<ParsedCampaign[]>
+  createCampaign: (form) => Promise<void>
+  refreshCampaigns: () => Promise<void>
+
+  // Donations
+  donate: (pId, amount) => Promise<any>
+  getDonations: (pId) => Promise<ParsedDonation[]>
+
+  // Admin
+  isAdmin: boolean
+  adminCheckCompleted: boolean
+  approveCampaign: (id) => Promise<void>
+  rejectCampaign: (id, reason) => Promise<void>
+
+  // UI
+  searchCampaign: string
+  setSearchCampaign: (value) => void
+}
+```
+
+### Data Caching Strategy
 
 ```
-Phase 1 — Current ✅
-├── Campaign creation, approval, rejection
-├── ETH donations + withdrawal
-├── Admin panel with Firebase auth
-└── Arbitrum Sepolia deployment
+Request for campaigns
+        │
+        ▼
+  Cache age < 5 seconds?
+        │
+   YES  │  NO
+        │   │
+        │   ▼
+        │  contract.call('getCampaigns')
+        │   │
+        │   ▼
+        │  Update allCampaignsCache
+        │  Update lastRefresh timestamp
+        │   │
+        └───┘
+        │
+        ▼
+  Return cached data
+```
 
-Phase 2 — In Progress 🔄
-├── Campaign search & filtering
-├── Responsive mobile UI
-└── Improved error handling + toasts
+---
 
-Phase 3 — Planned 📋
-├── 🔁 Multi-chain: Polygon, Base, Optimism
-├── 🪙 Token rewards for early backers
-├── 📊 Campaign analytics dashboard
-└── 📤 Email notifications (SendGrid)
+## 🔒 Security Model
 
-Phase 4 — Future 🔮
-├── 💬 Community comments per campaign
-├── 🏷️ Campaign categories & tags
-├── 🤝 DAO-based admin governance
-└── 🧠 ML-based spam detection
+### Role-Based Access Control
+
+```
+DEFAULT_ADMIN_ROLE (deployer)
+        │
+        └── Can grant/revoke ADMIN_ROLE
+        └── Can approve/reject campaigns
+
+ADMIN_ROLE
+        │
+        └── Can approve campaigns
+        └── Can reject campaigns (with reason)
+        └── Can grant ADMIN_ROLE to others
+
+Any Wallet Address
+        │
+        └── Can create campaigns (requires connected wallet)
+        └── Can donate to APPROVED campaigns
+        └── Cannot approve/reject
+```
+
+### Donation Security
+
+- Donations only accepted on campaigns with `status == APPROVED`
+- Donations only accepted before campaign `deadline`
+- ETH transferred directly to `campaign.owner` via `call{value}` — no platform custody
+- Failed transfers do not increment `amountCollected`
+
+### Frontend Guards
+
+- Admin dashboard checks `isAdmin` and `adminCheckCompleted` before rendering
+- Wallet connection required for campaign creation
+- Campaign status badges shown on all campaign cards for full transparency
+
+---
+
+## 📐 Campaign Card — Data Flow
+
+```
+Campaign (from blockchain)
+        │
+        ├── amountCollected / target  →  Progress bar % + "X% funded"
+        ├── deadline (unix timestamp) →  daysLeft() util  →  "N days left"
+        ├── status (0/1/2)            →  Status badge (Pending/Active/Rejected)
+        ├── donators.length           →  Backer count
+        ├── owner address             →  Avatar initials + shortened address
+        └── image URL                 →  Card hero image
 ```
 
 ---
 
 ## 🤝 Contributing
 
-Contributions are welcome and appreciated!
-
-```bash
-# Fork the repository
-# Create your feature branch
-git checkout -b feature/AmazingFeature
-
-# Commit your changes
-git commit -m 'Add AmazingFeature'
-
-# Push to the branch
-git push origin feature/AmazingFeature
-
-# Open a Pull Request
-```
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct and pull request guidelines.
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/your-feature`
+3. Commit your changes: `git commit -m 'feat: add your feature'`
+4. Push to the branch: `git push origin feature/your-feature`
+5. Open a Pull Request
 
 ---
 
-## 📜 License
+## 📝 License
 
-This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for full details.
-
-```
-MIT License
-
-Copyright (c) 2024 ChainFund Contributors
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software...
-```
-
----
-
-## 🙌 Acknowledgements
-
-| Tool | Purpose |
-|---|---|
-| [Thirdweb](https://thirdweb.com/) | Wallet connection, SDK, contract deployment |
-| [Hardhat](https://hardhat.org/) | Smart contract testing and compilation |
-| [Firebase](https://firebase.google.com/) | Admin auth and campaign metadata |
-| [Arbitrum](https://arbitrum.io/) | Low-cost Ethereum L2 network |
-| [Next.js](https://nextjs.org/) | React framework for the frontend |
-| [Tailwind CSS](https://tailwindcss.com/) | Utility-first styling |
-| [OpenZeppelin](https://openzeppelin.com/) | Solidity security best practices |
+This project is open source. See [LICENSE](LICENSE) for details.
 
 ---
 
 <div align="center">
 
-**Built with ❤️ on Ethereum**
-
-⭐ Star this repo if you found it useful!
-
-[![GitHub stars](https://img.shields.io/github/stars/your-username/crowdfunding-blockchain?style=social)](https://github.com/your-username/crowdfunding-blockchain)
+Built with ❤️ on **Arbitrum** · Powered by **Thirdweb** · Secured by **OpenZeppelin**
 
 </div>
